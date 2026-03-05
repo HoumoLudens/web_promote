@@ -164,7 +164,7 @@ body {
       linear-gradient(var(--bg-overlay-start), var(--bg-overlay-end)),
       radial-gradient(circle at 12% 10%, var(--bg-spot-a), transparent 42%),
       radial-gradient(circle at 86% 22%, var(--bg-spot-b), transparent 42%),
-      url('image/background1_moblie.png') center / cover no-repeat scroll,
+        url('image/background1_moblie.png') center top / 100% auto repeat-y scroll,
       var(--bg);
   }
 }
