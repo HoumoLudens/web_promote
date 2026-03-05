@@ -3,11 +3,12 @@ const formMessage = document.getElementById('formMessage');
 const themeSwitch = document.getElementById('themeSwitch');
 const themeButtons = themeSwitch ? themeSwitch.querySelectorAll('.theme-btn') : [];
 const THEME_KEY = 'web_promote_theme';
-const DEFAULT_THEME = 'violet';
+const DEFAULT_THEME = 'night-bar';
+const BASE_THEME = 'violet';
 
 const applyTheme = (themeName) => {
   const validTheme = themeName || DEFAULT_THEME;
-  if (validTheme === DEFAULT_THEME) {
+  if (validTheme === BASE_THEME) {
     document.documentElement.removeAttribute('data-theme');
   } else {
     document.documentElement.setAttribute('data-theme', validTheme);
