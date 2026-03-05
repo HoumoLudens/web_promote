@@ -106,7 +106,7 @@ html[data-theme='night-bite'] {
   --shadow-soft: 0 12px 30px rgba(0, 0, 0, 0.38);
 }
 
-html[data-theme='bg1-match'] {
+html[data-theme='night-bar'] {
   --bg: #0f1722;
   --surface: #182433;
   --surface-soft: #121d2c;
