@@ -255,6 +255,26 @@ a {
   transform-origin: left;
 }
 
+.lang-btn {
+  border: 1px solid var(--border);
+  background: var(--panel-bg);
+  color: var(--text-dim);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.22s ease;
+  white-space: nowrap;
+  box-shadow: var(--shadow-soft);
+}
+
+.lang-btn:hover {
+  color: var(--text);
+  border-color: var(--primary);
+}
+
 .theme-switch {
   display: inline-flex;
   align-items: center;
