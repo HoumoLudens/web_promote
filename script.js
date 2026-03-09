@@ -363,10 +363,14 @@ function updateChannelOptions() {
   const select = document.querySelector('select[name="channel"]');
   if (!select) return;
   const currentValue = select.value;
-  select.innerHTML = CHANNEL_OPTIONS.map(
-    (ch) =>
-      `<option value="${ch.value}"${ch.value === currentValue ? ' selected' : ''}>${t(ch.key)}</option>`,
-  ).join('');
+  select.innerHTML = '';
+  CHANNEL_OPTIONS.forEach((ch) => {
+    const opt = document.createElement('option');
+    opt.value = ch.value;
+    opt.textContent = t(ch.key);
+    if (ch.value === currentValue) opt.selected = true;
+    select.appendChild(opt);
+  });
 }
 
 function applyLang(lang) {
@@ -383,6 +387,10 @@ function applyLang(lang) {
 
   document.querySelectorAll('[data-i18n-placeholder]').forEach((el) => {
     el.placeholder = t(el.getAttribute('data-i18n-placeholder'));
+  });
+
+  document.querySelectorAll('[data-i18n-aria-label]').forEach((el) => {
+    el.setAttribute('aria-label', t(el.getAttribute('data-i18n-aria-label')));
   });
 
   updateChannelOptions();
@@ -481,11 +489,22 @@ if (navToggle && mainNav) {
 
 const STATS_KEY = 'kakitane_inquiries';
 
+/** Escape HTML entities to prevent XSS when inserting user data into innerHTML. */
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;');
+}
+
 function loadInquiries() {
   try {
     const raw = localStorage.getItem(STATS_KEY);
     return raw ? JSON.parse(raw) : [];
-  } catch {
+  } catch (err) {
+    console.error('Failed to parse saved inquiries:', err);
     return [];
   }
 }
@@ -499,7 +518,7 @@ function saveInquiry(data) {
 function computeStats(inquiries) {
   const now = Date.now();
   const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
-  const MONTH_MS = 30 * 24 * 60 * 60 * 1000;
+  const MONTH_MS = 30 * 24 * 60 * 60 * 1000; // approx. 30 days
   const thisWeek = inquiries.filter((i) => now - new Date(i.timestamp).getTime() <= WEEK_MS).length;
   const thisMonth = inquiries.filter((i) => now - new Date(i.timestamp).getTime() <= MONTH_MS).length;
   const byChannel = {};
@@ -536,7 +555,7 @@ function renderStats() {
         .map(
           ([channel, count]) => `
           <div class="channel-bar-row">
-            <span class="channel-bar-label">${channel}</span>
+            <span class="channel-bar-label">${escapeHtml(channel)}</span>
             <div class="channel-bar-track">
               <div class="channel-bar-fill" style="width:${((count / max) * 100).toFixed(1)}%"></div>
             </div>
@@ -568,10 +587,10 @@ function renderStats() {
               .map(
                 (i) => `
               <tr>
-                <td>${new Date(i.timestamp).toLocaleString()}</td>
-                <td>${i.company || '—'}</td>
-                <td>${i.channel || '—'}</td>
-                <td>${i.lang || '—'}</td>
+                <td>${escapeHtml(new Date(i.timestamp).toLocaleString())}</td>
+                <td>${escapeHtml(i.company || '—')}</td>
+                <td>${escapeHtml(i.channel || '—')}</td>
+                <td>${escapeHtml(i.lang || '—')}</td>
               </tr>`,
               )
               .join('')}
@@ -589,14 +608,18 @@ function exportCSV() {
   const inquiries = loadInquiries();
   if (inquiries.length === 0) return;
   const headers = ['Time', 'Company', 'Contact', 'Phone', 'Channel', 'Message', 'Language'];
+  /** Escape a CSV field value by replacing double-quotes and stripping newlines. */
+  function csvField(val) {
+    return String(val || '').replace(/"/g, '""').replace(/[\r\n]+/g, ' ');
+  }
   const rows = inquiries.map((i) => [
-    i.timestamp || '',
-    i.company || '',
-    i.name || '',
-    i.phone || '',
-    i.channel || '',
-    (i.message || '').replace(/"/g, '""'),
-    i.lang || '',
+    csvField(i.timestamp),
+    csvField(i.company),
+    csvField(i.name),
+    csvField(i.phone),
+    csvField(i.channel),
+    csvField(i.message),
+    csvField(i.lang),
   ]);
   const csv = [headers, ...rows]
     .map((row) => row.map((v) => `"${v}"`).join(','))
