@@ -27,6 +27,14 @@ python3 -m http.server 8080
 http://localhost:8080
 ```
 
+## GitHub Pages 部署说明
+
+该项目是纯静态站点，不需要 Jekyll 构建。
+
+- 仓库根目录已包含 `.nojekyll`，用于显式跳过 Jekyll 处理。
+- 请在 GitHub 仓库 `Settings > Pages > Build and deployment` 中将 `Source` 设为 `GitHub Actions`。
+- 不要同时使用 `Deploy from a branch`，否则 GitHub 可能仍会触发默认的 Pages/Jekyll 构建流程。
+
 ## 上线前建议修改
 
 请优先替换 `index.html` 中的以下商务信息：
