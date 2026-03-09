@@ -628,3 +628,45 @@ textarea:focus {
     gap: 6px;
   }
 }
+
+/* Language switcher */
+.lang-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--panel-bg);
+  box-shadow: var(--shadow-soft);
+}
+
+.lang-btn {
+  border: 0;
+  background: transparent;
+  color: var(--text-dim);
+  font: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  padding: 6px 9px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.22s ease;
+  letter-spacing: 0.02em;
+}
+
+.lang-btn:hover {
+  color: var(--text);
+}
+
+.lang-btn.is-active {
+  color: var(--primary-ink);
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+}
+
+/* Label span text helper */
+.label-text {
+  font-weight: 600;
+  color: var(--text);
+}
